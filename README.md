@@ -6,7 +6,7 @@
 *Engineered on the Google Antigravity 2.0 Architecture*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-tinyurl.com%2Fashiee--ai-00E5FF.svg)](https://tinyurl.com/ashiee-ai)
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Hosted-brightgreen.svg)](https://aryanpalla198.github.io/ashiee-ai-agent/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Hosted-brightgreen.svg)](https://aryanpalla198.github.io/ashiee/)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Antigravity](https://img.shields.io/badge/Antigravity-2.0%20Certified-9d4edd.svg)](#)
@@ -230,7 +230,7 @@ ashiee-ai-agent/
 Clone the repository and install in editable mode:
 
 ```bash
-git clone https://github.com/aryanpalla198/ashiee-ai-agent.git
+git clone https://github.com/aryanpalla198/ashiee.git
 cd ashiee-ai-agent
 pip install -e .
 ```
