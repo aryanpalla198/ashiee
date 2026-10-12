@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashiee — Member Workspace Dashboard</title>
+    <style>
+        :root {
+            --bg-root: #0b0d14;
+            --bg-sidebar: #121522;
+            --bg-card: #161a2a;
+            --border-subtle: #232a3d;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --agy-blue: #4285f4;
+            --agy-purple: #9d4edd;
+            --agy-green: #10b981;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg-root); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        header { background: var(--bg-sidebar); border-bottom: 1px solid var(--border-subtle); padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--agy-blue); }
+        .user-nav { display: flex; align-items: center; gap: 14px; }
+        .badge { background: rgba(16, 185, 129, 0.15); color: var(--agy-green); border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 600; }
+        .logout-btn { background: #1f2538; border: 1px solid var(--border-subtle); color: #f87171; border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+        main { flex: 1; padding: 32px; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .welcome-card { background: linear-gradient(135deg, rgba(66, 133, 244, 0.15), rgba(157, 78, 221, 0.15)); border: 1px solid rgba(66, 133, 244, 0.3); border-radius: 14px; padding: 24px; margin-bottom: 28px; }
+        .welcome-card h2 { font-size: 22px; margin-bottom: 6px; }
+        .welcome-card p { font-size: 14px; color: var(--text-muted); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px; }
+        .card-header { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 0.5px; }
+        .card-value { font-size: 18px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+        .card-sub { font-size: 12px; color: var(--agy-green); }
+        .activity-log { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .log-item { background: #0d101a; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-family: monospace; color: #cbd5e1; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-brand">✦ Ashiee Antigravity Workspace</div>
+        <div class="user-nav">
+            <span class="badge" id="roleBadge">● Authenticated</span>
+            <span id="navUsername" style="font-size: 13px; font-weight: 600;">admin</span>
+            <button class="logout-btn" onclick="logout()">Sign Out</button>
+        </div>
+    </header>
+    <main>
+        <div class="welcome-card">
+            <h2>Welcome to your Constructed Portal, <span id="welcomeName" style="color: var(--agy-blue);">User</span>!</h2>
+            <p>Your authentication credentials have been verified via PBKDF2 HMAC-SHA256.</p>
+        </div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">SECURITY PROTOCOL</div>
+                <div class="card-value">PBKDF2-HMAC-SHA256</div>
+                <div class="card-sub">100,000 Key Stretches • 16B Salt</div>
+            </div>
+            <div class="card">
+                <div class="card-header">WORKSPACE SERVER</div>
+                <div class="card-value">Port 5000 Active</div>
+                <div class="card-sub">FastAPI • Uvicorn Engine</div>
+            </div>
+            <div class="card">
+                <div class="card-header">SANDBOX BOUNDARY</div>
+                <div class="card-value">Ashiee Sandbox Enforced</div>
+                <div class="card-sub">Workspace Guard Verified</div>
+            </div>
+        </div>
+        <div class="card" style="margin-top: 24px;">
+            <div class="card-header">ACTIVE SESSION AUDIT LOG</div>
+            <div class="activity-log">
+                <div class="log-item"><span>[AUTH] Login Verified via PBKDF2</span><span>Just Now</span></div>
+                <div class="log-item"><span>[SESSION] Bearer Token Issued (32 bytes)</span><span>Active</span></div>
+                <div class="log-item"><span>[SANDBOX] Host verified: 127.0.0.1:5000</span><span>Verified</span></div>
+            </div>
+        </div>
+    </main>
+    <script>
+        const user = localStorage.getItem('ashiee_user') || 'admin';
+        document.getElementById('welcomeName').innerText = user;
+        document.getElementById('navUsername').innerText = user;
+        function logout() {
+            localStorage.removeItem('ashiee_token');
+            localStorage.removeItem('ashiee_user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

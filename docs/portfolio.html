@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aryan Palla — AI & Software Engineer</title>
+    <style>
+        :root {
+            --bg-base: #0B0D14;
+            --bg-card: #131726;
+            --border: #22283E;
+            --text-main: #F3F5FA;
+            --text-muted: #8E9AB5;
+            --blue: #4285F4;
+            --purple: #9D4EDD;
+            --cyan: #00E5FF;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg-base); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 16px; }
+        .container { max-width: 840px; width: 100%; }
+        .hero { text-align: center; margin-bottom: 48px; }
+        .avatar-ring { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px; background: linear-gradient(135deg, var(--blue), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: #fff; box-shadow: 0 0 30px rgba(66, 133, 244, 0.35); }
+        h1 { font-size: 38px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #fff, #9D4EDD); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .tagline { color: var(--text-muted); font-size: 18px; margin-bottom: 20px; }
+        .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+        .badge { background: rgba(66, 133, 244, 0.12); color: var(--cyan); border: 1px solid rgba(66, 133, 244, 0.3); padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; }
+        .section-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; color: #fff; }
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: transform 0.2s, border-color 0.2s; }
+        .project-card:hover { transform: translateY(-3px); border-color: var(--blue); }
+        .project-name { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: #fff; }
+        .project-desc { color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 12px; }
+        .project-link { font-size: 12px; color: var(--blue); text-decoration: none; font-weight: 600; }
+        .footer { text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="avatar-ring">AP</div>
+            <h1>Aryan Palla</h1>
+            <p class="tagline">Autonomous AI Systems & Full-Stack Architect</p>
+            <div class="badges">
+                <span class="badge">✦ Google Antigravity 2.0</span>
+                <span class="badge">Python 3.13</span>
+                <span class="badge">Agentic Systems</span>
+                <span class="badge">FastAPI & WebSockets</span>
+                <span class="badge">Neumorphic UI</span>
+            </div>
+        </div>
+
+        <div class="section-title">Featured Projects</div>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-name">✦ Ashiee AI Agent</div>
+                <div class="project-desc">Autonomous pair programmer & runtime built on Google Antigravity architecture with 11 sandboxed tools and dynamic project synthesis.</div>
+                <a href="https://github.com/aryanpalla198/ashiee-ai-agent" target="_blank" class="project-link">View on GitHub ↗</a>
+            </div>
+            <div class="project-card">
+                <div class="project-name">🔐 Auth Portal Engine</div>
+                <div class="project-desc">Cryptographic authentication backend featuring PBKDF2 HMAC-SHA256, session token invalidation, and obsidian UI.</div>
+                <a href="login.html" class="project-link">Launch Portal ↗</a>
+            </div>
+            <div class="project-card">
+                <div class="project-name">🧮 Neumorphic Calculator</div>
+                <div class="project-desc">Interactive arithmetic computation engine with Python AST parsing, token pre-evaluation, and glassmorphic styling.</div>
+                <a href="calculator.html" class="project-link">Launch App ↗</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            Designed & Constructed by Ashiee AI Agent • Copyright © 2026 Aryan Palla
+        </div>
+    </div>
+</body>
+</html>

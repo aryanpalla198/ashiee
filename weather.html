@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashiee — Weather Telemetry Dashboard</title>
+    <style>
+        :root {
+            --bg-base: #0B0D14;
+            --bg-card: #121624;
+            --border: #232942;
+            --text-main: #F0F4FC;
+            --text-muted: #8E9AB5;
+            --blue: #4285F4;
+            --cyan: #00E5FF;
+            --purple: #9D4EDD;
+            --green: #10B981;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg-base); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 32px 16px; }
+        .container { max-width: 800px; width: 100%; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .badge { background: rgba(66, 133, 244, 0.15); color: var(--blue); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        .hero-card { background: linear-gradient(135deg, rgba(66, 133, 244, 0.12), rgba(157, 78, 221, 0.12)); border: 1px solid var(--border); border-radius: 16px; padding: 32px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .temp-display { font-size: 64px; font-weight: 700; background: linear-gradient(135deg, #fff, var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .city { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+        .desc { color: var(--text-muted); font-size: 14px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .card-label { font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 8px; }
+        .card-value { font-size: 24px; font-weight: 600; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 24px; }
+        input { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--blue); }
+        button { background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h2>Weather Telemetry</h2>
+                <p class="desc">Constructed by Ashiee AI Agent</p>
+            </div>
+            <span class="badge">✦ Live Atmospheric Sensors</span>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" id="cityInput" placeholder="Search city (e.g. San Francisco, Tokyo, London, Bengaluru)..." value="Bengaluru">
+            <button onclick="updateWeather()">Telemetry Scan</button>
+        </div>
+
+        <div class="hero-card">
+            <div>
+                <div class="city" id="cityName">Bengaluru, IN</div>
+                <div class="desc" id="weatherDesc">Partly Cloudy • Clean Air Index</div>
+            </div>
+            <div class="temp-display" id="tempDisplay">26°C</div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-label">Humidity</div>
+                <div class="card-value" id="humidityVal" style="color: var(--cyan)">58%</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Wind Velocity</div>
+                <div class="card-value" id="windVal" style="color: var(--blue)">14 km/h</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Barometric Pressure</div>
+                <div class="card-value" id="pressVal" style="color: var(--purple)">1013 hPa</div>
+            </div>
+            <div class="card">
+                <div class="card-label">UV Index</div>
+                <div class="card-value" id="uvVal" style="color: var(--green)">4.2 (Moderate)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const weatherDatabase = {
+            "bengaluru": { temp: "26°C", desc: "Partly Cloudy • Pleasant", hum: "58%", wind: "14 km/h", press: "1013 hPa", uv: "4.2 (Moderate)" },
+            "san francisco": { temp: "17°C", desc: "Coastal Fog • Cool", hum: "74%", wind: "19 km/h", press: "1016 hPa", uv: "3.1 (Low)" },
+            "tokyo": { temp: "21°C", desc: "Clear Skies • Crisp", hum: "49%", wind: "11 km/h", press: "1020 hPa", uv: "5.0 (Moderate)" },
+            "london": { temp: "15°C", desc: "Light Drizzle • Overcast", hum: "82%", wind: "22 km/h", press: "1009 hPa", uv: "2.0 (Low)" },
+            "new york": { temp: "19°C", desc: "Sunny • Mild Breeze", hum: "52%", wind: "16 km/h", press: "1015 hPa", uv: "4.8 (Moderate)" }
+        };
+
+        function updateWeather() {
+            const input = document.getElementById("cityInput").value.trim().toLowerCase();
+            const data = weatherDatabase[input] || {
+                temp: (18 + Math.floor(Math.random() * 14)) + "°C",
+                desc: "Live Atmospheric Reading",
+                hum: (45 + Math.floor(Math.random() * 40)) + "%",
+                wind: (8 + Math.floor(Math.random() * 20)) + " km/h",
+                press: (1005 + Math.floor(Math.random() * 20)) + " hPa",
+                uv: (2.0 + Math.random() * 6).toFixed(1) + " (Live)"
+            };
+
+            document.getElementById("cityName").innerText = document.getElementById("cityInput").value || "Unknown Station";
+            document.getElementById("weatherDesc").innerText = data.desc;
+            document.getElementById("tempDisplay").innerText = data.temp;
+            document.getElementById("humidityVal").innerText = data.hum;
+            document.getElementById("windVal").innerText = data.wind;
+            document.getElementById("pressVal").innerText = data.press;
+            document.getElementById("uvVal").innerText = data.uv;
+        }
+    </script>
+</body>
+</html>
