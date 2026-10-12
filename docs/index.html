@@ -3,571 +3,468 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ashiee AI Agent — Studio & Constructed Apps</title>
+    <title>Ashiee — Google Antigravity Studio</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>✦</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+    <script src="marked.min.js"></script>
     <style>
-        :root {
-            --bg-base: #0B0D14;
-            --bg-surface: #121624;
-            --bg-sidebar: #0E111C;
-            --border: #232942;
-            --text-main: #F0F4FC;
-            --text-muted: #8E9AB5;
-            --blue: #4285F4;
-            --purple: #9D4EDD;
-            --cyan: #00E5FF;
-            --green: #10B981;
-            --accent-glow: rgba(66, 133, 244, 0.25);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: var(--bg-base); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-
-        /* Top Navigation Header */
-        header {
-            background: var(--bg-sidebar);
-            border-bottom: 1px solid var(--border);
-            height: 56px;
+        /* File Explorer Enhancements */
+        .file-tree {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            flex-shrink: 0;
-            z-index: 100;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 17px;
-        }
-
-        .brand-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
+            flex-direction: column;
+            gap: 2px;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            max-height: 220px;
+            overflow-y: auto;
+            background: rgba(14, 17, 26, 0.6);
+            border: 1px solid var(--border-subtle);
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 0 0 15px var(--accent-glow);
+            padding: 8px;
         }
-
-        .tag {
-            font-size: 11px;
-            padding: 2px 8px;
-            background: rgba(66, 133, 244, 0.15);
-            color: var(--cyan);
-            border-radius: 999px;
-            font-weight: 600;
-            border: 1px solid rgba(66, 133, 244, 0.3);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .share-pill {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(157, 78, 221, 0.15);
-            border: 1px solid rgba(157, 78, 221, 0.4);
-            color: #D8B4FE;
-            padding: 6px 14px;
-            border-radius: 999px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .share-pill:hover {
-            background: rgba(157, 78, 221, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .btn-gh {
+        .file-tree-item {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: #24292e;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            border: 1px solid #444d56;
-            transition: background 0.2s;
-        }
-
-        .btn-gh:hover { background: #2f363d; }
-
-        /* App Tabs Navigation Bar */
-        .tabs-bar {
-            background: #0D101A;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            gap: 4px;
-            padding: 6px 16px;
-            overflow-x: auto;
-            flex-shrink: 0;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-muted);
-            padding: 7px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
+            padding: 4px 6px;
+            border-radius: 4px;
+            color: var(--text-secondary);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
             transition: all 0.15s;
-            white-space: nowrap;
+            text-decoration: none;
         }
-
-        .tab-btn:hover {
-            color: var(--text-main);
-            background: rgba(255, 255, 255, 0.04);
+        .file-tree-item:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
         }
-
-        .tab-btn.active {
-            background: var(--bg-surface);
-            color: var(--cyan);
-            border-color: var(--border);
-            font-weight: 600;
+        .file-tree-item.active {
+            background: rgba(66, 133, 244, 0.15);
+            color: var(--agy-blue);
         }
-
-        /* Main Workspace Container */
-        .main-container {
-            flex: 1;
-            display: flex;
-            height: calc(100vh - 102px);
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Iframe View for App Pages */
-        .app-frame-view {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: none;
-            background: var(--bg-base);
-        }
-
-        .app-frame-view.active {
-            display: block;
-        }
-
-        /* AI Studio Chat Layout */
-        .studio-view {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            position: absolute;
+        .file-icon { font-size: 11px; opacity: 0.8; }
+        .code-modal-backdrop {
+            position: fixed;
             inset: 0;
-            z-index: 10;
-        }
-
-        .studio-view.hidden {
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            z-index: 999;
             display: none;
-        }
-
-        /* Left Canvas Sidebar */
-        .sidebar {
-            width: 280px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            gap: 16px;
-            overflow-y: auto;
-        }
-
-        .section-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .telemetry-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-
-        .metric-label { color: var(--text-muted); }
-        .metric-val { font-weight: 600; color: var(--green); }
-
-        .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .skill-chip {
-            background: rgba(66, 133, 244, 0.1);
-            color: var(--blue);
-            border: 1px solid rgba(66, 133, 244, 0.25);
-            border-radius: 6px;
-            font-size: 11px;
-            padding: 4px 8px;
-        }
-
-        /* Main Chat Center */
-        .chat-center {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-base);
-        }
-
-        .messages-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .msg {
-            display: flex;
-            gap: 12px;
-            max-width: 820px;
-            width: 100%;
-        }
-
-        .msg-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            font-weight: 700;
-            flex-shrink: 0;
         }
-
-        .msg.user .msg-avatar { background: var(--blue); color: #fff; }
-        .msg.agent .msg-avatar { background: linear-gradient(135deg, var(--blue), var(--purple)); color: #fff; box-shadow: 0 0 10px var(--accent-glow); }
-
-        .msg-body {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
+        .code-modal {
+            background: #0B0D14;
+            border: 1px solid var(--border-accent);
             border-radius: 12px;
-            padding: 14px 18px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--text-main);
-        }
-
-        .msg.user .msg-body {
-            background: rgba(66, 133, 244, 0.12);
-            border-color: rgba(66, 133, 244, 0.3);
-        }
-
-        .prompt-box {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            background: var(--bg-sidebar);
+            width: 850px;
+            max-width: 92vw;
+            height: 560px;
             display: flex;
-            gap: 12px;
-            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
         }
-
-        .input-wrap {
-            flex: 1;
-            position: relative;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 18px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--blue);
-            box-shadow: 0 0 12px rgba(66, 133, 244, 0.25);
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            border: none;
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--accent-glow);
-            transition: opacity 0.2s;
-        }
-
-        .send-btn:hover { opacity: 0.9; }
-
-        .app-link-card {
-            margin-top: 10px;
-            background: rgba(0, 229, 255, 0.08);
-            border: 1px solid rgba(0, 229, 255, 0.3);
-            border-radius: 8px;
-            padding: 10px 14px;
+        .code-modal-header {
+            padding: 12px 18px;
+            background: #121522;
+            border-bottom: 1px solid var(--border-subtle);
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
         }
-
-        .app-link-title { font-weight: 600; color: var(--cyan); font-size: 13px; }
-        .app-link-btn { background: var(--cyan); color: #000; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--bg-surface);
-            border: 1px solid var(--cyan);
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 13px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 1000;
+        .code-modal-body {
+            flex: 1;
+            padding: 16px;
+            overflow: auto;
+            background: #080A0F;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.6;
+            color: #d1d5db;
+            white-space: pre;
         }
     </style>
 </head>
-<body>
+<body class="antigravity-dark">
+    <div class="antigravity-layout">
+        <!-- 1. Left Icon Rail -->
+        <nav class="icon-rail">
+            <div class="rail-top">
+                <div class="agy-logo" title="Google Antigravity">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="#9D4EDD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <button class="rail-btn active" title="Chat Canvas" onclick="setNavView('chat')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="rail-btn" title="Explorer & Workspace Files" onclick="setNavView('files')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="rail-btn" title="Skills & Plugins" onclick="setNavView('skills')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </button>
+                <button class="rail-btn" title="Automations & Cron" onclick="setNavView('tasks')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
+            </div>
+            <div class="rail-bottom">
+                <a href="https://github.com/aryanpalla198/ashiee" target="_blank" class="rail-btn" title="GitHub Repository">
+                    <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                </a>
+                <button class="rail-btn" title="Settings & Model" onclick="openSettings()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+            </div>
+        </nav>
 
-    <!-- Header -->
-    <header>
-        <div class="brand">
-            <div class="brand-icon">✦</div>
-            <span>Ashiee AI Agent</span>
-            <span class="tag">Antigravity 2.0</span>
-        </div>
-        <div class="header-actions">
-            <button class="share-pill" onclick="copyShortLink()" title="Click to Copy Short Link">
-                <span>🔗 Short Link:</span>
-                <strong>tinyurl.com/ashiee-ai</strong>
-            </button>
-            <a href="https://github.com/aryanpalla198/ashiee" target="_blank" class="btn-gh">
-                <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                <span>GitHub (56 files)</span>
-            </a>
-        </div>
-    </header>
+        <!-- 2. Left Sidebar Panel -->
+        <aside class="sidebar-panel">
+            <div class="sidebar-header">
+                <div class="app-title">
+                    <span class="gradient-text">Ashiee</span>
+                    <span class="tag-badge">Antigravity 2.0</span>
+                </div>
+                <button class="new-chat-btn" onclick="clearMessages()" title="New Chat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>New Chat</span>
+                </button>
+            </div>
 
-    <!-- App Tabs -->
-    <div class="tabs-bar">
-        <button class="tab-btn active" onclick="switchView('studio')">✦ AI Chat Canvas</button>
-        <button class="tab-btn" onclick="switchView('calculator')">🧮 Calculator</button>
-        <button class="tab-btn" onclick="switchView('snake')">🐍 Cyberpunk Snake</button>
-        <button class="tab-btn" onclick="switchView('todo')">📝 Tasks (Todo)</button>
-        <button class="tab-btn" onclick="switchView('login')">🔐 Auth & Login Portal</button>
-        <button class="tab-btn" onclick="switchView('weather')">🌤️ Weather Telemetry</button>
-        <button class="tab-btn" onclick="switchView('portfolio')">💼 Aryan Palla Portfolio</button>
-    </div>
-
-    <!-- Main Views -->
-    <div class="main-container">
-
-        <!-- 1. AI Studio View -->
-        <div class="studio-view" id="studioView">
-            <aside class="sidebar">
-                <div>
-                    <div class="section-label">TELEMETRY & STATUS</div>
-                    <div class="telemetry-card">
-                        <div class="metric-row"><span class="metric-label">Engine:</span><span class="metric-val">Antigravity 2.0</span></div>
-                        <div class="metric-row"><span class="metric-label">Status:</span><span class="metric-val">Online • 100%</span></div>
-                        <div class="metric-row"><span class="metric-label">Tools Registered:</span><span class="metric-val">11 Tools</span></div>
-                        <div class="metric-row"><span class="metric-label">Collab Bridge:</span><span class="metric-val">Active (12.4ms)</span></div>
+            <div class="sidebar-content">
+                <!-- Workspace Selector -->
+                <div class="panel-group">
+                    <span class="group-title">WORKSPACE</span>
+                    <div class="workspace-card" title="Current Workspace Root">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                        <span id="workspacePath" class="path-truncate">aryanpalla198/ashiee</span>
                     </div>
                 </div>
 
-                <div>
-                    <div class="section-label">CONSTRUCTED PROJECTS</div>
-                    <div class="telemetry-card" style="gap: 8px;">
-                        <a href="javascript:switchView('calculator')" style="color: var(--cyan); text-decoration: none; font-size: 13px;">• Neumorphic Calculator ↗</a>
-                        <a href="javascript:switchView('snake')" style="color: var(--cyan); text-decoration: none; font-size: 13px;">• Neon Snake Game ↗</a>
-                        <a href="javascript:switchView('todo')" style="color: var(--cyan); text-decoration: none; font-size: 13px;">• Task Orchestrator ↗</a>
-                        <a href="javascript:switchView('login')" style="color: var(--cyan); text-decoration: none; font-size: 13px;">• Auth & Member Portal ↗</a>
-                        <a href="javascript:switchView('weather')" style="color: var(--cyan); text-decoration: none; font-size: 13px;">• Weather Telemetry ↗</a>
-                        <a href="javascript:switchView('portfolio')" style="color: var(--cyan); text-decoration: none; font-size: 13px;">• Aryan Palla Portfolio ↗</a>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="section-label">DISCOVERED SKILLS</div>
-                    <div class="skills-list">
-                        <span class="skill-chip">code-reviewer</span>
-                        <span class="skill-chip">test-generator</span>
-                        <span class="skill-chip">project-builder</span>
-                        <span class="skill-chip">auth-encryption</span>
-                    </div>
-                </div>
-            </aside>
-
-            <main class="chat-center">
-                <div class="messages-scroll" id="msgContainer">
-                    <div class="msg agent">
-                        <div class="msg-avatar">✦</div>
-                        <div class="msg-body">
-                            <strong>Hello! I am Ashiee</strong>, your Autonomous Pair Programmer and Runtime powered by Google Antigravity 2.0.<br><br>
-                            I have synthesized <strong>7 live constructed applications</strong> available in the tabs above, including the <strong>Customer Authentication Portal</strong>, <strong>Neumorphic Calculator</strong>, <strong>Cyberpunk Snake</strong>, <strong>Todo App</strong>, and <strong>Weather Telemetry</strong>.<br><br>
-                            You can click any tab above to use them, or ask me below to generate and test new code!
-                            <div class="app-link-card">
-                                <div>
-                                    <div class="app-link-title">✦ Customer Login Portal (Live)</div>
-                                    <span style="font-size: 11px; color: var(--text-muted);">PBKDF2 HMAC-SHA256 Encryption & Session Tokens</span>
-                                </div>
-                                <button class="app-link-btn" onclick="switchView('login')">Open Portal</button>
-                            </div>
+                <!-- Active Model -->
+                <div class="panel-group">
+                    <span class="group-title">MODEL TARGET</span>
+                    <div class="model-badge-card" onclick="openSettings()" style="cursor: pointer;" title="Click to Configure AI Engine & API Key">
+                        <div class="sparkle-icon">✦</div>
+                        <div class="model-info">
+                            <span class="model-name" id="sidebarModelName">Gemini 2.5 Flash</span>
+                            <span class="model-sub" id="sidebarModelStatus">Antigravity Integrated Engine ⚙</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="prompt-box">
-                    <div class="input-wrap">
-                        <input type="text" id="userInput" placeholder="Ask Ashiee anything (e.g. 'build a calculator', 'review code', 'run tests')..." onkeydown="if(event.key==='Enter') sendPrompt()">
+                <!-- Workspace Files Explorer -->
+                <div class="panel-group">
+                    <span class="group-title">EXPLORER / FILES</span>
+                    <div class="file-tree" id="fileTreeContainer">
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/core/agent.py')">
+                            <span class="file-icon">🐍</span><span>ashiee/core/agent.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/core/antigravity_bridge.py')">
+                            <span class="file-icon">⚡</span><span>core/antigravity_bridge.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/tools/file_ops.py')">
+                            <span class="file-icon">🔧</span><span>ashiee/tools/file_ops.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/tools/terminal.py')">
+                            <span class="file-icon">💻</span><span>ashiee/tools/terminal.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('tests/test_core.py')">
+                            <span class="file-icon">🧪</span><span>tests/test_core.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('README.md')">
+                            <span class="file-icon">📄</span><span>README.md</span>
+                        </div>
                     </div>
-                    <button class="send-btn" onclick="sendPrompt()">Send ✦</button>
                 </div>
-            </main>
-        </div>
 
-        <!-- 2. Embedded Iframes for Apps -->
-        <iframe src="calculator.html" class="app-frame-view" id="calculatorFrame"></iframe>
-        <iframe src="snake.html" class="app-frame-view" id="snakeFrame"></iframe>
-        <iframe src="todo.html" class="app-frame-view" id="todoFrame"></iframe>
-        <iframe src="login.html" class="app-frame-view" id="loginFrame"></iframe>
-        <iframe src="weather.html" class="app-frame-view" id="weatherFrame"></iframe>
-        <iframe src="portfolio.html" class="app-frame-view" id="portfolioFrame"></iframe>
+                <!-- Progressive Skills -->
+                <div class="panel-group">
+                    <span class="group-title">DISCOVERED SKILLS</span>
+                    <div class="skills-chips" id="skillsList">
+                        <div class="skill-pill" title="Code review runbook">code-reviewer</div>
+                        <div class="skill-pill" title="Pytest generation runbook">test-generator</div>
+                        <div class="skill-pill" title="Antigravity agent SDK">antigravity-sdk</div>
+                    </div>
+                </div>
 
+                <!-- Tool Policy -->
+                <div class="panel-group">
+                    <span class="group-title">SECURITY & SANDBOX</span>
+                    <div class="policy-card">
+                        <div class="policy-row">
+                            <span>Terminal Sandbox:</span>
+                            <span class="status-pill green">Active</span>
+                        </div>
+                        <div class="policy-row">
+                            <span>Tool Policy:</span>
+                            <span class="status-pill blue">always-proceed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-status-bar">
+                <div class="status-dot online"></div>
+                <span id="runtimeStatus">Antigravity Runtime Online</span>
+            </div>
+        </aside>
+
+        <!-- 3. Center Main Chat Canvas -->
+        <main class="chat-canvas">
+            <header class="canvas-topbar">
+                <div class="topbar-left">
+                    <div class="session-badge">
+                        <span class="dot-indicator"></span>
+                        <span>Session: <strong id="sessionIdLabel">Main Orchestrator</strong></span>
+                    </div>
+                    <div class="sandbox-pill">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>Workspace Boundary Guard Active</span>
+                    </div>
+                    <div class="sandbox-pill" style="border-color: rgba(66, 133, 244, 0.4); background: rgba(66, 133, 244, 0.1); color: #93c5fd;">
+                        <span>✦ Antigravity Collab: Active ⚡</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="topbar-action-btn" onclick="clearMessages()" title="Clear Conversation">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Message Stream -->
+            <div class="messages-stream" id="messagesContainer">
+                <div class="antigravity-hero">
+                    <div class="hero-logo-glow">✦</div>
+                    <h1>Ashiee <span class="gradient-text">Antigravity</span></h1>
+                    <p>Autonomous AI pair programming runtime. Direct workspace file operations, sandboxed terminal executions, and progressive skill loading.</p>
+                    
+                    <div class="prompt-starters">
+                        <button class="starter-card" onclick="sendPrompt('/plan Architect an autonomous multi-agent code analysis pipeline')">
+                            <span class="card-icon">📋</span>
+                            <span class="card-title">Plan Architecture</span>
+                            <span class="card-desc">Interactive /plan workflow</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Review the code in ashiee/core/agent.py and inspect the ReAct execution loop')">
+                            <span class="card-icon">🛡️</span>
+                            <span class="card-title">Code Review</span>
+                            <span class="card-desc">Audit core engine & tools</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Run pytest tests/ to verify the entire test suite passes')">
+                            <span class="card-icon">⚡</span>
+                            <span class="card-title">Run Test Suite</span>
+                            <span class="card-desc">Sandboxed pytest execution</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Explore this workspace, list all Python files, and inspect registered tools in Ashiee.')">
+                            <span class="card-icon">🔍</span>
+                            <span class="card-title">Explore Workspace</span>
+                            <span class="card-desc">Scan files & inspect tools</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Floating Composer -->
+            <div class="composer-container">
+                <!-- Slash Command Autocomplete Popover -->
+                <div class="slash-menu hidden" id="slashMenu">
+                    <div class="slash-header">Antigravity Workflows & Slash Commands</div>
+                    <div class="slash-item" onclick="applySlash('/plan ')">
+                        <span class="slash-cmd">/plan</span>
+                        <span class="slash-desc">Review and refine a step-by-step implementation plan before execution</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/goal ')">
+                        <span class="slash-cmd">/goal</span>
+                        <span class="slash-desc">Execute a long-running autonomous task with extra thoroughness</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/skills ')">
+                        <span class="slash-cmd">/skills</span>
+                        <span class="slash-desc">Inspect and activate progressive skills runbooks</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/tools ')">
+                        <span class="slash-cmd">/tools</span>
+                        <span class="slash-desc">List all 11 registered sandboxed tools in Ashiee</span>
+                    </div>
+                </div>
+
+                <!-- Context Chips Bar -->
+                <div class="composer-toolbar">
+                    <div class="chips-row">
+                        <button class="composer-chip" onclick="applySlash('/plan ')">/plan</button>
+                        <button class="composer-chip" onclick="applySlash('/skills ')">/skills</button>
+                        <button class="composer-chip" onclick="sendPrompt('List all registered tools in Ashiee')">/tools</button>
+                        <span class="divider"></span>
+                        <span class="chip-text">Shift + Enter for new line</span>
+                    </div>
+                </div>
+
+                <!-- Input Box -->
+                <div class="composer-card">
+                    <textarea id="promptInput" placeholder="Message Ashiee (Type / for commands, Enter to send)..." rows="2"></textarea>
+                    <div class="composer-actions">
+                        <div class="permission-pill">
+                            <span class="shield-icon">🛡</span>
+                            <span>Sandbox: Enforced</span>
+                        </div>
+                        <button class="send-action-btn" id="sendBtn" onclick="submitPrompt()">
+                            <span>Send</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 4. Right Auxiliary Pane (Antigravity Side Pane) -->
+        <aside class="auxiliary-pane">
+            <div class="aux-tabs">
+                <button class="aux-tab active" id="tabBtnThoughts" onclick="switchTab('thoughts')">
+                    <span class="tab-dot purple"></span>
+                    <span>Thoughts</span>
+                </button>
+                <button class="aux-tab" id="tabBtnTerminal" onclick="switchTab('terminal')">
+                    <span class="tab-dot green"></span>
+                    <span>Terminal</span>
+                </button>
+                <button class="aux-tab" id="tabBtnArtifacts" onclick="switchTab('artifacts')">
+                    <span class="tab-dot blue"></span>
+                    <span>Artifacts</span>
+                </button>
+                <button class="aux-tab" id="tabBtnDiffs" onclick="switchTab('diffs')">
+                    <span class="tab-dot amber"></span>
+                    <span>Diffs</span>
+                </button>
+                <button class="aux-tab" id="tabBtnBridge" onclick="switchTab('bridge')">
+                    <span class="tab-dot blue"></span>
+                    <span>Collab Bridge</span>
+                </button>
+            </div>
+
+            <div class="aux-content">
+                <!-- Thoughts Tab -->
+                <div id="thoughtsPane" class="tab-view active">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Chain of Thought & Reasoning</span>
+                    </div>
+                    <div class="thoughts-feed" id="thoughtStream">
+                        <div class="empty-feed">
+                            <div class="feed-icon">🧠</div>
+                            <p>Real-time reasoning stream</p>
+                            <span>Ashiee's internal thoughts and reflection deltas appear here during turns.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal Tab -->
+                <div id="terminalPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Sandboxed PTY Execution Log</span>
+                    </div>
+                    <pre class="terminal-screen" id="terminalLog">PS C:\Users\aryan\.gemini\antigravity\scratch\ashiee&gt; _</pre>
+                </div>
+
+                <!-- Artifacts Tab -->
+                <div id="artifactsPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Structured Artifacts & Reports</span>
+                    </div>
+                    <div class="artifacts-container" id="artifactsContainer">
+                        <div class="artifact-card">
+                            <div class="card-badge">Report</div>
+                            <h4>Ashiee Architectural Blueprint</h4>
+                            <p>ReAct loop, sandbox boundaries, and progressive disclosure skills catalog.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diffs Tab -->
+                <div id="diffsPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Visual File Changes</span>
+                    </div>
+                    <div class="diffs-feed" id="diffsContainer">
+                        <div class="empty-feed">
+                            <div class="feed-icon">📝</div>
+                            <p>No active file diffs</p>
+                            <span>Modified lines will display in red/green when tools make file edits.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Antigravity Collaboration Bridge Tab -->
+                <div id="bridgePane" class="tab-view">
+                    <div class="pane-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="pane-title">Antigravity ↔ Ashiee Collaboration Hub</span>
+                        <button class="aux-action-btn" onclick="syncBridge()" title="Resync Shared Skills">⚡ Sync Now</button>
+                    </div>
+                    <div id="bridgeTelemetryContent" style="padding: 14px;">
+                        <div class="telemetry-card" style="background:#131726; border:1px solid #232942; border-radius:8px; padding:12px; margin-bottom:10px;">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+                                <span style="color:#94a3b8;">Bridge Status:</span>
+                                <span style="color:#10b981; font-weight:600;">Connected (Active)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+                                <span style="color:#94a3b8;">Latency:</span>
+                                <span style="color:#4285f4; font-weight:600;">12.4 ms (In-Memory)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px;">
+                                <span style="color:#94a3b8;">Shared Skills:</span>
+                                <span style="color:#9d4edd; font-weight:600;">11 Indexed Skills</span>
+                            </div>
+                        </div>
+                        <p style="font-size:11px; color:#64748b; line-height:1.5;">Real-time co-pilot telemetry exchanging active skills index and workspace tool states between Antigravity and Ashiee.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
 
-    <div class="toast" id="toast">Copied to clipboard!</div>
+    <!-- Code Viewer Modal -->
+    <div class="code-modal-backdrop" id="codeModal">
+        <div class="code-modal">
+            <div class="code-modal-header">
+                <span id="codeModalTitle" style="font-size:13px; font-weight:600; color:#4285f4; font-family:var(--font-mono);">File Viewer</span>
+                <button class="topbar-action-btn" onclick="closeFilePreview()">✕ Close</button>
+            </div>
+            <pre class="code-modal-body" id="codeModalContent"></pre>
+        </div>
+    </div>
 
-    <script>
-        function switchView(viewName) {
-            // Update tab buttons
-            const btns = document.querySelectorAll(".tab-btn");
-            btns.forEach(b => b.classList.remove("active"));
-            const targetBtn = Array.from(btns).find(b => b.getAttribute("onclick")?.includes(viewName));
-            if (targetBtn) targetBtn.classList.add("active");
+    <!-- Settings & Model Modal -->
+    <div id="settingsModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="sparkle-icon" style="display:inline-flex; width:22px; height:22px; font-size:11px;">✦</span>
+                    <span>Google Antigravity Engine Configuration</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Configure your Google Gemini or Antigravity runtime model.</p>
+                <div style="margin-bottom: 14px;">
+                    <label for="apiKeyInput" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="AIzaSy... (Paste Gemini / AI Studio key)" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px; font-family:var(--font-mono);">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label for="modelSelect" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Model Selection</label>
+                    <select id="modelSelect" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px;">
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fastest, High Quality) — Default</option>
+                        <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="composer-chip" onclick="closeSettings()" style="padding:8px 16px;">Cancel</button>
+                <button class="send-action-btn" onclick="saveSettings()" style="padding:8px 20px;">Save</button>
+            </div>
+        </div>
+    </div>
 
-            // Hide studio view or show it
-            const studioView = document.getElementById("studioView");
-            if (viewName === "studio") {
-                studioView.classList.remove("hidden");
-            } else {
-                studioView.classList.add("hidden");
-            }
-
-            // Manage iframes
-            const frames = document.querySelectorAll(".app-frame-view");
-            frames.forEach(f => f.classList.remove("active"));
-
-            const targetFrame = document.getElementById(viewName + "Frame");
-            if (targetFrame) {
-                targetFrame.classList.add("active");
-            }
-        }
-
-        function sendPrompt() {
-            const input = document.getElementById("userInput");
-            const text = input.value.trim();
-            if (!text) return;
-
-            const container = document.getElementById("msgContainer");
-
-            // User Message
-            const userMsg = document.createElement("div");
-            userMsg.className = "msg user";
-            userMsg.innerHTML = `<div class="msg-avatar">U</div><div class="msg-body">${escapeHtml(text)}</div>`;
-            container.appendChild(userMsg);
-            input.value = "";
-
-            // Auto-scroll
-            container.scrollTop = container.scrollHeight;
-
-            // Simulated Agent Response
-            setTimeout(() => {
-                const agentMsg = document.createElement("div");
-                agentMsg.className = "msg agent";
-                const lower = text.toLowerCase();
-                let reply = "";
-
-                if (lower.includes("calc")) {
-                    reply = `✦ <strong>Calculator Activated</strong><br>Opening the Neumorphic AST Calculator constructed for this workspace. All arithmetic precendence rules are active.<br><div class="app-link-card"><div><div class="app-link-title">🧮 Neumorphic Calculator</div></div><button class="app-link-btn" onclick="switchView('calculator')">View Calculator</button></div>`;
-                } else if (lower.includes("snake") || lower.includes("game")) {
-                    reply = `✦ <strong>Cyberpunk Neon Snake Game Ready</strong><br>60fps HTML5 Canvas engine is running with keyboard controls (Arrow Keys / WASD).<br><div class="app-link-card"><div><div class="app-link-title">🐍 Neon Snake Game</div></div><button class="app-link-btn" onclick="switchView('snake')">Play Game</button></div>`;
-                } else if (lower.includes("login") || lower.includes("auth") || lower.includes("password")) {
-                    reply = `✦ <strong>Authentication Engine Online</strong><br>PBKDF2 HMAC-SHA256 (100,000 rounds) password salting with 32-byte cryptographic session verification.<br><div class="app-link-card"><div><div class="app-link-title">🔐 Auth & Member Portal</div></div><button class="app-link-btn" onclick="switchView('login')">Launch Portal</button></div>`;
-                } else if (lower.includes("test")) {
-                    reply = `✦ <strong>Pytest Automated Verification</strong><br>Ran <code>pytest tests/ -v</code> across 14 test cases.<br><pre style="background:#090B10; padding:10px; border-radius:6px; margin-top:8px; font-size:12px; color:#34D399;">✓ test_registration_and_login PASSED\n✓ test_duplicate_user_rejected PASSED\n✓ test_hash_unique_salts PASSED\n✓ test_session_lifecycle PASSED\n✓ test_arithmetic PASSED\n✓ test_agent_execution_loop PASSED\n14 passed in 0.99s</pre>`;
-                } else {
-                    reply = `✦ <strong>Antigravity ReAct Cycle Executed</strong><br>Processed instruction: "<em>${escapeHtml(text)}</em>". All 11 registered tools and shared skills are synchronized.<br><br>👉 Use the tabs above to explore all constructed apps or switch into the dedicated apps view!`;
-                }
-
-                agentMsg.innerHTML = `<div class="msg-avatar">✦</div><div class="msg-body">${reply}</div>`;
-                container.appendChild(agentMsg);
-                container.scrollTop = container.scrollHeight;
-            }, 500);
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
-
-        function copyShortLink() {
-            const url = "https://tinyurl.com/ashiee-ai";
-            navigator.clipboard.writeText(url).then(() => {
-                showToast("Copied: https://tinyurl.com/ashiee-ai");
-            }).catch(() => {
-                showToast("Short link: https://tinyurl.com/ashiee-ai");
-            });
-        }
-
-        function showToast(text) {
-            const t = document.getElementById("toast");
-            t.innerText = text;
-            t.style.display = "block";
-            setTimeout(() => { t.style.display = "none"; }, 2500);
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
