@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ashiee — Customer Portal (Arya)</title>
+    <style>
+        :root { --bg-root: #0b0d14; --bg-card: #161a2a; --border-subtle: #232a3d; --agy-blue: #4285f4; --agy-purple: #9d4edd; --agy-green: #10b981; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg-root); color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 16px; width: 100%; max-width: 420px; padding: 36px 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
+        h1 { font-size: 22px; text-align: center; margin-bottom: 4px; }
+        .subtitle { font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 24px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 12px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; }
+        input { width: 100%; background: #0c0f1a; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--agy-blue); }
+        .btn { width: 100%; background: linear-gradient(135deg, var(--agy-blue), var(--agy-purple)); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; padding: 13px; cursor: pointer; margin-top: 10px; }
+        .badge { background: rgba(16, 185, 129, 0.15); border: 1px dashed rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 10px; font-size: 12px; color: #86efac; text-align: center; margin-top: 20px; cursor: pointer; }
+        .toast { display: none; padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; }
+        .toast.error { display: block; background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+        .toast.success { display: block; background: rgba(16, 185, 129, 0.15); color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>✦ Customer Portal</h1>
+        <p class="subtitle">Configured for Customer: <strong>Arya</strong></p>
+        <div id="toast" class="toast"></div>
+        <form onsubmit="handleAuth(event)">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" value="arya" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" value="antigravity2026" required>
+            </div>
+            <button type="submit" class="btn">Sign In to Workspace</button>
+        </form>
+        <div class="badge" onclick="quickFill()">
+            ⚡ Pre-Configured Customer: <strong>arya</strong> / <strong>antigravity2026</strong>
+        </div>
+    </div>
+    <script>
+        function quickFill() {
+            document.getElementById('username').value = 'arya';
+            document.getElementById('password').value = 'antigravity2026';
+        }
+        async function handleAuth(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value;
+            const t = document.getElementById('toast');
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    t.innerText = 'Authenticated successfully! Redirecting...';
+                    t.className = 'toast success';
+                    localStorage.setItem('ashiee_user', u);
+                    localStorage.setItem('ashiee_token', data.token);
+                    setTimeout(() => { window.location.href = '/dashboard'; }, 600);
+                } else {
+                    t.innerText = data.detail || 'Login failed.';
+                    t.className = 'toast error';
+                }
+            } catch (err) {
+                t.innerText = 'Connection error. Ensure backend is running.';
+                t.className = 'toast error';
+            }
+        }
+    </script>
+</body>
+</html>

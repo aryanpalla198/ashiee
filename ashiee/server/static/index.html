@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashiee — Google Antigravity Studio</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/marked.min.js"></script>
+</head>
+<body class="antigravity-dark">
+    <div class="antigravity-layout">
+        <!-- 1. Left Icon Rail -->
+        <nav class="icon-rail">
+            <div class="rail-top">
+                <div class="agy-logo" title="Google Antigravity">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="#9D4EDD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <button class="rail-btn active" title="Chat Canvas" onclick="setNavView('chat')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="rail-btn" title="Projects & Workspaces" onclick="setNavView('projects')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="rail-btn" title="Scheduled Automations (Cron)" onclick="setNavView('tasks')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
+                <button class="rail-btn" title="Skills & Plugins" onclick="setNavView('skills')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </button>
+            </div>
+            <div class="rail-bottom">
+                <button class="rail-btn" title="Settings & Permissions" onclick="setNavView('settings')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 2. Left Sidebar Panel -->
+        <aside class="sidebar-panel">
+            <div class="sidebar-header">
+                <div class="app-title">
+                    <span class="gradient-text">Ashiee</span>
+                    <span class="tag-badge">Antigravity 2.0</span>
+                </div>
+                <button class="new-chat-btn" onclick="clearMessages()" title="New Chat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>New Chat</span>
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Workspace Selector -->
+                <div class="panel-group">
+                    <span class="group-title">WORKSPACE</span>
+                    <div class="workspace-card" title="Current Workspace Root">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                        <span id="workspacePath" class="path-truncate">Loading workspace...</span>
+                    </div>
+                </div>
+
+                <!-- Active Model -->
+                <div class="panel-group">
+                    <span class="group-title">MODEL TARGET</span>
+                    <div class="model-badge-card" onclick="openSettings()" style="cursor: pointer;" title="Click to Configure AI Engine & API Key">
+                        <div class="sparkle-icon">✦</div>
+                        <div class="model-info">
+                            <span class="model-name" id="sidebarModelName">Gemini 2.5 Flash</span>
+                            <span class="model-sub" id="sidebarModelStatus">Antigravity Integrated Engine ⚙</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progressive Skills -->
+                <div class="panel-group">
+                    <span class="group-title">DISCOVERED SKILLS</span>
+                    <div class="skills-chips" id="skillsList">
+                        <div class="skill-pill">code-reviewer</div>
+                        <div class="skill-pill">test-generator</div>
+                    </div>
+                </div>
+
+                <!-- Constructed Projects -->
+                <div class="panel-group" id="projectsSection">
+                    <span class="group-title">CONSTRUCTED PROJECTS</span>
+                    <div class="project-badge-card" id="projectBadgeCard" onclick="switchTab('preview')">
+                        <div class="project-indicator online"></div>
+                        <div class="project-info">
+                            <span class="project-name">Auth Portal (Port 5000)</span>
+                            <span class="project-status-text">Live • Click to Preview ↗</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool Policy -->
+                <div class="panel-group">
+                    <span class="group-title">SECURITY & SANDBOX</span>
+                    <div class="policy-card">
+                        <div class="policy-row">
+                            <span>Terminal Sandbox:</span>
+                            <span class="status-pill green">Active</span>
+                        </div>
+                        <div class="policy-row">
+                            <span>Tool Policy:</span>
+                            <span class="status-pill blue">always-proceed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-status-bar">
+                <div class="status-dot online"></div>
+                <span id="runtimeStatus">Antigravity Runtime Online</span>
+            </div>
+        </aside>
+
+        <!-- 3. Center Main Chat Canvas -->
+        <main class="chat-canvas">
+            <header class="canvas-topbar">
+                <div class="topbar-left">
+                    <div class="session-badge">
+                        <span class="dot-indicator"></span>
+                        <span>Session: <strong id="sessionIdLabel">Main Orchestrator</strong></span>
+                    </div>
+                    <div class="sandbox-pill">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>Workspace Boundary Guard Active</span>
+                    </div>
+                    <div class="sandbox-pill" style="border-color: rgba(66, 133, 244, 0.4); background: rgba(66, 133, 244, 0.1); color: #93c5fd;">
+                        <span>✦ Antigravity Collab: Active ⚡</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="topbar-action-btn" onclick="clearMessages()" title="Clear Conversation">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Message Stream -->
+            <div class="messages-stream" id="messagesContainer">
+                <div class="antigravity-hero">
+                    <div class="hero-logo-glow">✦</div>
+                    <h1>Ashiee <span class="gradient-text">Antigravity</span></h1>
+                    <p>Autonomous AI pair programming runtime. Direct workspace file operations, sandboxed terminal executions, and progressive skill loading.</p>
+                    
+                    <div class="prompt-starters">
+                        <button class="starter-card" onclick="sendPrompt('Build a login system for my website.')">
+                            <span class="card-icon">🔨</span>
+                            <span class="card-title">Build Complete Website</span>
+                            <span class="card-desc">Construct auth, pages & launch</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('display the project')">
+                            <span class="card-icon">🌐</span>
+                            <span class="card-title">Display Live Project</span>
+                            <span class="card-desc">Preview constructed portal</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Run pytest tests/ to verify the entire test suite passes')">
+                            <span class="card-icon">⚡</span>
+                            <span class="card-title">Run Test Suite</span>
+                            <span class="card-desc">Sandboxed pytest execution</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Explore this workspace, list all Python files, and tell me which tools are available in Ashiee.')">
+                            <span class="card-icon">🔍</span>
+                            <span class="card-title">Explore Workspace</span>
+                            <span class="card-desc">Scan files & inspect tools</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Floating Composer -->
+            <div class="composer-container">
+                <!-- Slash Command Autocomplete Popover -->
+                <div class="slash-menu hidden" id="slashMenu">
+                    <div class="slash-header">Antigravity Workflows & Slash Commands</div>
+                    <div class="slash-item" onclick="applySlash('/plan ')">
+                        <span class="slash-cmd">/plan</span>
+                        <span class="slash-desc">Review and refine a step-by-step implementation plan before execution</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/goal ')">
+                        <span class="slash-cmd">/goal</span>
+                        <span class="slash-desc">Execute a long-running autonomous task with extra thoroughness</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/skills ')">
+                        <span class="slash-cmd">/skills</span>
+                        <span class="slash-desc">Inspect and activate progressive skills runbooks</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/tools ')">
+                        <span class="slash-cmd">/tools</span>
+                        <span class="slash-desc">List all 11 registered sandboxed tools in Ashiee</span>
+                    </div>
+                </div>
+
+                <!-- Context Chips Bar -->
+                <div class="composer-toolbar">
+                    <div class="chips-row">
+                        <button class="composer-chip" onclick="applySlash('/plan ')">/plan</button>
+                        <button class="composer-chip" onclick="applySlash('/skills ')">/skills</button>
+                        <button class="composer-chip" onclick="sendPrompt('List all registered tools in Ashiee')">/tools</button>
+                        <span class="divider"></span>
+                        <span class="chip-text">Shift + Enter for new line</span>
+                    </div>
+                </div>
+
+                <!-- Input Box -->
+                <div class="composer-card">
+                    <textarea id="promptInput" placeholder="Message Ashiee (Type / for commands, Enter to send)..." rows="2"></textarea>
+                    <div class="composer-actions">
+                        <div class="permission-pill">
+                            <span class="shield-icon">🛡</span>
+                            <span>Sandbox: Enforced</span>
+                        </div>
+                        <button class="send-action-btn" id="sendBtn" onclick="submitPrompt()">
+                            <span>Send</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 4. Right Auxiliary Pane (Antigravity 2.0 Side Pane) -->
+        <aside class="auxiliary-pane">
+            <div class="aux-tabs">
+                <button class="aux-tab active" id="tabBtnThoughts" onclick="switchTab('thoughts')">
+                    <span class="tab-dot purple"></span>
+                    <span>Thoughts</span>
+                </button>
+                <button class="aux-tab" id="tabBtnTerminal" onclick="switchTab('terminal')">
+                    <span class="tab-dot green"></span>
+                    <span>Terminal</span>
+                </button>
+                <button class="aux-tab" id="tabBtnArtifacts" onclick="switchTab('artifacts')">
+                    <span class="tab-dot blue"></span>
+                    <span>Artifacts</span>
+                </button>
+                <button class="aux-tab" id="tabBtnDiffs" onclick="switchTab('diffs')">
+                    <span class="tab-dot amber"></span>
+                    <span>Diffs</span>
+                </button>
+                <button class="aux-tab" id="tabBtnPreview" onclick="switchTab('preview')">
+                    <span class="tab-dot green"></span>
+                    <span>Live Preview</span>
+                </button>
+                <button class="aux-tab" id="tabBtnBridge" onclick="switchTab('bridge')">
+                    <span class="tab-dot blue"></span>
+                    <span>Collab Bridge</span>
+                </button>
+            </div>
+
+            <div class="aux-content">
+                <!-- Thoughts Tab -->
+                <div id="thoughtsPane" class="tab-view active">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Chain of Thought & Reasoning</span>
+                    </div>
+                    <div class="thoughts-feed" id="thoughtStream">
+                        <div class="empty-feed">
+                            <div class="feed-icon">🧠</div>
+                            <p>Real-time reasoning stream</p>
+                            <span>Ashiee's internal thoughts and reflection deltas appear here during turns.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal Tab -->
+                <div id="terminalPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Sandboxed PTY Execution Log</span>
+                    </div>
+                    <pre class="terminal-screen" id="terminalLog">PS C:\Users\aryan\.gemini\antigravity\scratch\ashiee&gt; _</pre>
+                </div>
+
+                <!-- Artifacts Tab -->
+                <div id="artifactsPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Structured Artifacts & Reports</span>
+                    </div>
+                    <div class="artifacts-container" id="artifactsContainer">
+                        <div class="artifact-card">
+                            <div class="card-badge">Report</div>
+                            <h4>Ashiee Architectural Blueprint</h4>
+                            <p>ReAct loop, sandbox boundaries, and progressive disclosure skills catalog.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diffs Tab -->
+                <div id="diffsPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Visual File Changes</span>
+                    </div>
+                    <div class="diffs-feed" id="diffsContainer">
+                        <div class="empty-feed">
+                            <div class="feed-icon">📝</div>
+                            <p>No active file diffs</p>
+                            <span>Modified lines will display in red/green when tools make file edits.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Preview Tab -->
+                <div id="previewPane" class="tab-view">
+                    <div class="pane-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="pane-title">Live Application Preview</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="aux-action-btn" onclick="reloadPreview()" title="Reload Frame">🔄 Reload</button>
+                            <a href="http://127.0.0.1:5000" target="_blank" class="aux-action-btn" title="Open in New Tab" style="text-decoration:none; color:inherit;">↗ Open</a>
+                        </div>
+                    </div>
+                    <div class="preview-address-bar">
+                        <span class="status-dot online"></span>
+                        <span id="previewUrl">http://127.0.0.1:5000</span>
+                    </div>
+                    <div class="preview-frame-wrap">
+                        <iframe id="previewIframe" src="http://127.0.0.1:5000" class="preview-frame"></iframe>
+                    </div>
+                </div>
+
+                <!-- Antigravity Collaboration Bridge Tab -->
+                <div id="bridgePane" class="tab-view">
+                    <div class="pane-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="pane-title">Antigravity ↔ Ashiee Collaboration Hub</span>
+                        <button class="aux-action-btn" onclick="syncBridge()" title="Resync Shared Skills">⚡ Sync Now</button>
+                    </div>
+                    <div id="bridgeTelemetryContent" style="padding: 14px;">
+                        <div class="empty-feed">
+                            <div class="feed-icon">⚡</div>
+                            <p>Connecting to Antigravity Bridge...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- Settings & Model Modal -->
+    <div id="settingsModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="sparkle-icon" style="display:inline-flex; width:22px; height:22px; font-size:11px;">✦</span>
+                    <span>Google Antigravity Engine Configuration</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Connect your Google Gemini or Antigravity credentials for real-time cloud inference, or use the built-in autonomous offline synthesizer.</p>
+                <div style="margin-bottom: 14px;">
+                    <label for="apiKeyInput" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="AIzaSy... (Paste Gemini / AI Studio key)" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px; font-family:var(--font-mono);">
+                    <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                        Need an API key? <a href="https://aistudio.google.com/app/api-keys" target="_blank" style="color:var(--agy-blue); text-decoration:none;">Get a free key from Google AI Studio ↗</a>
+                    </div>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label for="modelSelect" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Model Selection</label>
+                    <select id="modelSelect" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px;">
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fastest, High Quality) — Recommended</option>
+                        <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning & Multimodal)</option>
+                        <option value="gemini-1.5-pro">Gemini 1.5 Pro (Long Context)</option>
+                    </select>
+                </div>
+                <div class="settings-status-box" id="settingsStatusBox" style="background:#0e1322; border:1px solid var(--border-subtle); border-radius:6px; padding:10px 14px; font-size:12px; margin-bottom:16px;">
+                    <span id="settingsStatusText" style="color:var(--text-secondary);">Current Status: Autonomous Local Synthesizer Active</span>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="composer-chip" onclick="closeSettings()" style="padding:8px 16px;">Cancel</button>
+                <button class="send-action-btn" onclick="saveSettings()" style="padding:8px 20px;">Save & Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
