@@ -378,3 +378,32 @@ function syncBridge() {
 function escapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+
+function toggleMobileSidebar(type) {
+    const backdrop = document.getElementById("mobileBackdrop");
+    const sidebar = document.querySelector(".sidebar-panel");
+    const aux = document.querySelector(".auxiliary-pane");
+
+    if (type === "files") {
+        const isOpen = sidebar?.classList.contains("open");
+        closeMobileDrawers();
+        if (!isOpen && sidebar) {
+            sidebar.classList.add("open");
+            backdrop?.classList.add("active");
+        }
+    } else if (type === "aux") {
+        const isOpen = aux?.classList.contains("open");
+        closeMobileDrawers();
+        if (!isOpen && aux) {
+            aux.classList.add("open");
+            backdrop?.classList.add("active");
+        }
+    }
+}
+
+function closeMobileDrawers() {
+    document.querySelector(".sidebar-panel")?.classList.remove("open");
+    document.querySelector(".auxiliary-pane")?.classList.remove("open");
+    document.getElementById("mobileBackdrop")?.classList.remove("active");
+}
+
