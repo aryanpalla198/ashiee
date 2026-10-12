@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ashiee — Google Antigravity Studio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>✦</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+    <script src="marked.min.js"></script>
+    <style>
+        /* File Explorer Enhancements */
+        .file-tree {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            max-height: 220px;
+            overflow-y: auto;
+            background: rgba(14, 17, 26, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 8px;
+        }
+        .file-tree-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+        .file-tree-item:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        .file-tree-item.active {
+            background: rgba(66, 133, 244, 0.15);
+            color: var(--agy-blue);
+        }
+        .file-icon { font-size: 11px; opacity: 0.8; }
+        .code-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .code-modal {
+            background: #0B0D14;
+            border: 1px solid var(--border-accent);
+            border-radius: 12px;
+            width: 850px;
+            max-width: 92vw;
+            height: 560px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+        .code-modal-header {
+            padding: 12px 18px;
+            background: #121522;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-modal-body {
+            flex: 1;
+            padding: 16px;
+            overflow: auto;
+            background: #080A0F;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.6;
+            color: #d1d5db;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body class="antigravity-dark">
+    <div class="antigravity-layout">
+        <!-- 1. Left Icon Rail -->
+        <nav class="icon-rail">
+            <div class="rail-top">
+                <div class="agy-logo" title="Google Antigravity">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="#9D4EDD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <button class="rail-btn active" title="Chat Canvas" onclick="setNavView('chat')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="rail-btn" title="Explorer & Workspace Files" onclick="setNavView('files')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="rail-btn" title="Skills & Plugins" onclick="setNavView('skills')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </button>
+                <button class="rail-btn" title="Automations & Cron" onclick="setNavView('tasks')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
+            </div>
+            <div class="rail-bottom">
+                <a href="https://github.com/aryanpalla198/ashiee" target="_blank" class="rail-btn" title="GitHub Repository">
+                    <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                </a>
+                <button class="rail-btn" title="Settings & Model" onclick="openSettings()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 2. Left Sidebar Panel -->
+        <aside class="sidebar-panel">
+            <div class="sidebar-header">
+                <div class="app-title">
+                    <span class="gradient-text">Ashiee</span>
+                    <span class="tag-badge">Antigravity 2.0</span>
+                    <button class="topbar-action-btn mobile-nav-btn" onclick="closeMobileDrawers()" style="padding:2px 8px; margin-left:auto;" title="Close">✕</button>
+                </div>
+                <button class="new-chat-btn" onclick="clearMessages(); closeMobileDrawers();" title="New Chat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>New Chat</span>
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Workspace Selector -->
+                <div class="panel-group">
+                    <span class="group-title">WORKSPACE</span>
+                    <div class="workspace-card" title="Current Workspace Root">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                        <span id="workspacePath" class="path-truncate">aryanpalla198/ashiee</span>
+                    </div>
+                </div>
+
+                <!-- Active Model -->
+                <div class="panel-group">
+                    <span class="group-title">MODEL TARGET</span>
+                    <div class="model-badge-card" onclick="openSettings()" style="cursor: pointer;" title="Click to Configure AI Engine & API Key">
+                        <div class="sparkle-icon">✦</div>
+                        <div class="model-info">
+                            <span class="model-name" id="sidebarModelName">Gemini 2.5 Flash</span>
+                            <span class="model-sub" id="sidebarModelStatus">Antigravity Integrated Engine ⚙</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workspace Files Explorer -->
+                <div class="panel-group">
+                    <span class="group-title">EXPLORER / FILES</span>
+                    <div class="file-tree" id="fileTreeContainer">
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/core/agent.py')">
+                            <span class="file-icon">🐍</span><span>ashiee/core/agent.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/core/antigravity_bridge.py')">
+                            <span class="file-icon">⚡</span><span>core/antigravity_bridge.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/tools/file_ops.py')">
+                            <span class="file-icon">🔧</span><span>ashiee/tools/file_ops.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/tools/terminal.py')">
+                            <span class="file-icon">💻</span><span>ashiee/tools/terminal.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('tests/test_core.py')">
+                            <span class="file-icon">🧪</span><span>tests/test_core.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('README.md')">
+                            <span class="file-icon">📄</span><span>README.md</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progressive Skills -->
+                <div class="panel-group">
+                    <span class="group-title">DISCOVERED SKILLS</span>
+                    <div class="skills-chips" id="skillsList">
+                        <div class="skill-pill" title="Code review runbook">code-reviewer</div>
+                        <div class="skill-pill" title="Pytest generation runbook">test-generator</div>
+                        <div class="skill-pill" title="Antigravity agent SDK">antigravity-sdk</div>
+                    </div>
+                </div>
+
+                <!-- Tool Policy -->
+                <div class="panel-group">
+                    <span class="group-title">SECURITY & SANDBOX</span>
+                    <div class="policy-card">
+                        <div class="policy-row">
+                            <span>Terminal Sandbox:</span>
+                            <span class="status-pill green">Active</span>
+                        </div>
+                        <div class="policy-row">
+                            <span>Tool Policy:</span>
+                            <span class="status-pill blue">always-proceed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-status-bar">
+                <div class="status-dot online"></div>
+                <span id="runtimeStatus">Antigravity Runtime Online</span>
+            </div>
+        </aside>
+
+        <!-- 3. Center Main Chat Canvas -->
+        <main class="chat-canvas">
+            <header class="canvas-topbar">
+                <div class="topbar-left">
+                    <button class="topbar-action-btn mobile-nav-btn" onclick="toggleMobileSidebar('files')" title="Workspace Explorer & Files">
+                        <span>📁 Files</span>
+                    </button>
+                    <div class="session-badge">
+                        <span class="dot-indicator"></span>
+                        <span>Session: <strong id="sessionIdLabel">Main</strong></span>
+                    </div>
+                    <div class="sandbox-pill">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>Workspace Boundary Guard Active</span>
+                    </div>
+                    <div class="sandbox-pill" style="border-color: rgba(66, 133, 244, 0.4); background: rgba(66, 133, 244, 0.1); color: #93c5fd;">
+                        <span>✦ Antigravity Collab: Active ⚡</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="topbar-action-btn mobile-nav-btn" onclick="toggleMobileSidebar('aux')" title="Thoughts & Terminal Sidecar">
+                        <span>🧠 Sidecar</span>
+                    </button>
+                    <button class="topbar-action-btn" onclick="clearMessages()" title="Clear Conversation">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Message Stream -->
+            <div class="messages-stream" id="messagesContainer">
+                <div class="antigravity-hero">
+                    <div class="hero-logo-glow">✦</div>
+                    <h1>Ashiee <span class="gradient-text">Antigravity</span></h1>
+                    <p>Autonomous AI pair programming runtime. Direct workspace file operations, sandboxed terminal executions, and progressive skill loading.</p>
+                    
+                    <div class="prompt-starters">
+                        <button class="starter-card" onclick="sendPrompt('/plan Architect an autonomous multi-agent code analysis pipeline')">
+                            <span class="card-icon">📋</span>
+                            <span class="card-title">Plan Architecture</span>
+                            <span class="card-desc">Interactive /plan workflow</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Review the code in ashiee/core/agent.py and inspect the ReAct execution loop')">
+                            <span class="card-icon">🛡️</span>
+                            <span class="card-title">Code Review</span>
+                            <span class="card-desc">Audit core engine & tools</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Run pytest tests/ to verify the entire test suite passes')">
+                            <span class="card-icon">⚡</span>
+                            <span class="card-title">Run Test Suite</span>
+                            <span class="card-desc">Sandboxed pytest execution</span>
+                        </button>
+                        <button class="starter-card" onclick="sendPrompt('Explore this workspace, list all Python files, and inspect registered tools in Ashiee.')">
+                            <span class="card-icon">🔍</span>
+                            <span class="card-title">Explore Workspace</span>
+                            <span class="card-desc">Scan files & inspect tools</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Floating Composer -->
+            <div class="composer-container">
+                <!-- Slash Command Autocomplete Popover -->
+                <div class="slash-menu hidden" id="slashMenu">
+                    <div class="slash-header">Antigravity Workflows & Slash Commands</div>
+                    <div class="slash-item" onclick="applySlash('/plan ')">
+                        <span class="slash-cmd">/plan</span>
+                        <span class="slash-desc">Review and refine a step-by-step implementation plan before execution</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/goal ')">
+                        <span class="slash-cmd">/goal</span>
+                        <span class="slash-desc">Execute a long-running autonomous task with extra thoroughness</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/skills ')">
+                        <span class="slash-cmd">/skills</span>
+                        <span class="slash-desc">Inspect and activate progressive skills runbooks</span>
+                    </div>
+                    <div class="slash-item" onclick="applySlash('/tools ')">
+                        <span class="slash-cmd">/tools</span>
+                        <span class="slash-desc">List all 11 registered sandboxed tools in Ashiee</span>
+                    </div>
+                </div>
+
+                <!-- Context Chips Bar -->
+                <div class="composer-toolbar">
+                    <div class="chips-row">
+                        <button class="composer-chip" onclick="applySlash('/plan ')">/plan</button>
+                        <button class="composer-chip" onclick="applySlash('/skills ')">/skills</button>
+                        <button class="composer-chip" onclick="sendPrompt('List all registered tools in Ashiee')">/tools</button>
+                        <span class="divider"></span>
+                        <span class="chip-text">Shift + Enter for new line</span>
+                    </div>
+                </div>
+
+                <!-- Input Box -->
+                <div class="composer-card">
+                    <textarea id="promptInput" placeholder="Message Ashiee (Type / for commands, Enter to send)..." rows="2"></textarea>
+                    <div class="composer-actions">
+                        <div class="permission-pill">
+                            <span class="shield-icon">🛡</span>
+                            <span>Sandbox: Enforced</span>
+                        </div>
+                        <button class="send-action-btn" id="sendBtn" onclick="submitPrompt()">
+                            <span>Send</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 4. Right Auxiliary Pane (Antigravity Side Pane) -->
+        <aside class="auxiliary-pane">
+            <div class="aux-tabs">
+                <button class="aux-tab active" id="tabBtnThoughts" onclick="switchTab('thoughts')">
+                    <span class="tab-dot purple"></span>
+                    <span>Thoughts</span>
+                </button>
+                <button class="aux-tab" id="tabBtnTerminal" onclick="switchTab('terminal')">
+                    <span class="tab-dot green"></span>
+                    <span>Terminal</span>
+                </button>
+                <button class="aux-tab" id="tabBtnArtifacts" onclick="switchTab('artifacts')">
+                    <span class="tab-dot blue"></span>
+                    <span>Artifacts</span>
+                </button>
+                <button class="aux-tab" id="tabBtnDiffs" onclick="switchTab('diffs')">
+                    <span class="tab-dot amber"></span>
+                    <span>Diffs</span>
+                </button>
+                <button class="aux-tab" id="tabBtnBridge" onclick="switchTab('bridge')">
+                    <span class="tab-dot blue"></span>
+                    <span>Collab Bridge</span>
+                </button>
+                <button class="aux-tab mobile-nav-btn" onclick="closeMobileDrawers()" title="Close" style="margin-left:auto; color:var(--text-muted);">✕</button>
+            </div>
+
+            <div class="aux-content">
+                <!-- Thoughts Tab -->
+                <div id="thoughtsPane" class="tab-view active">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Chain of Thought & Reasoning</span>
+                    </div>
+                    <div class="thoughts-feed" id="thoughtStream">
+                        <div class="empty-feed">
+                            <div class="feed-icon">🧠</div>
+                            <p>Real-time reasoning stream</p>
+                            <span>Ashiee's internal thoughts and reflection deltas appear here during turns.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal Tab -->
+                <div id="terminalPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Sandboxed PTY Execution Log</span>
+                    </div>
+                    <pre class="terminal-screen" id="terminalLog">PS C:\Users\aryan\.gemini\antigravity\scratch\ashiee&gt; _</pre>
+                </div>
+
+                <!-- Artifacts Tab -->
+                <div id="artifactsPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Structured Artifacts & Reports</span>
+                    </div>
+                    <div class="artifacts-container" id="artifactsContainer">
+                        <div class="artifact-card">
+                            <div class="card-badge">Report</div>
+                            <h4>Ashiee Architectural Blueprint</h4>
+                            <p>ReAct loop, sandbox boundaries, and progressive disclosure skills catalog.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diffs Tab -->
+                <div id="diffsPane" class="tab-view">
+                    <div class="pane-title-bar">
+                        <span class="pane-title">Visual File Changes</span>
+                    </div>
+                    <div class="diffs-feed" id="diffsContainer">
+                        <div class="empty-feed">
+                            <div class="feed-icon">📝</div>
+                            <p>No active file diffs</p>
+                            <span>Modified lines will display in red/green when tools make file edits.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Antigravity Collaboration Bridge Tab -->
+                <div id="bridgePane" class="tab-view">
+                    <div class="pane-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="pane-title">Antigravity ↔ Ashiee Collaboration Hub</span>
+                        <button class="aux-action-btn" onclick="syncBridge()" title="Resync Shared Skills">⚡ Sync Now</button>
+                    </div>
+                    <div id="bridgeTelemetryContent" style="padding: 14px;">
+                        <div class="telemetry-card" style="background:#131726; border:1px solid #232942; border-radius:8px; padding:12px; margin-bottom:10px;">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+                                <span style="color:#94a3b8;">Bridge Status:</span>
+                                <span style="color:#10b981; font-weight:600;">Connected (Active)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+                                <span style="color:#94a3b8;">Latency:</span>
+                                <span style="color:#4285f4; font-weight:600;">12.4 ms (In-Memory)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px;">
+                                <span style="color:#94a3b8;">Shared Skills:</span>
+                                <span style="color:#9d4edd; font-weight:600;">11 Indexed Skills</span>
+                            </div>
+                        </div>
+                        <p style="font-size:11px; color:#64748b; line-height:1.5;">Real-time co-pilot telemetry exchanging active skills index and workspace tool states between Antigravity and Ashiee.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Mobile Drawer Backdrop -->
+    <div class="mobile-backdrop" id="mobileBackdrop" onclick="closeMobileDrawers()"></div>
+
+    <!-- Code Viewer Modal -->
+    <div class="code-modal-backdrop" id="codeModal">
+        <div class="code-modal">
+            <div class="code-modal-header">
+                <span id="codeModalTitle" style="font-size:13px; font-weight:600; color:#4285f4; font-family:var(--font-mono);">File Viewer</span>
+                <button class="topbar-action-btn" onclick="closeFilePreview()">✕ Close</button>
+            </div>
+            <pre class="code-modal-body" id="codeModalContent"></pre>
+        </div>
+    </div>
+
+    <!-- Settings & Model Modal -->
+    <div id="settingsModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="sparkle-icon" style="display:inline-flex; width:22px; height:22px; font-size:11px;">✦</span>
+                    <span>Google Antigravity Engine Configuration</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Configure your Google Gemini or Antigravity runtime model.</p>
+                <div style="margin-bottom: 14px;">
+                    <label for="apiKeyInput" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="AIzaSy... (Paste Gemini / AI Studio key)" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px; font-family:var(--font-mono);">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label for="modelSelect" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Model Selection</label>
+                    <select id="modelSelect" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px;">
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fastest, High Quality) — Default</option>
+                        <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="composer-chip" onclick="closeSettings()" style="padding:8px 16px;">Cancel</button>
+                <button class="send-action-btn" onclick="saveSettings()" style="padding:8px 20px;">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
