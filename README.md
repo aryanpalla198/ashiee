@@ -5,11 +5,12 @@
 ### Autonomous AI Pair Programmer & Workspace Development Runtime
 *Engineered on the Google Antigravity 2.0 Architecture*
 
-[![CI Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/aryanpalla198/ashiee-ai-agent/actions)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-tinyurl.com%2Fashiee--ai-00E5FF.svg)](https://tinyurl.com/ashiee-ai)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Hosted-brightgreen.svg)](https://aryanpalla198.github.io/ashiee-ai-agent/)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Antigravity](https://img.shields.io/badge/Antigravity-2.0%20Certified-9d4edd.svg)](#)
-[![Latency](https://img.shields.io/badge/Latency-%3C15ms%20In--Memory-10b981.svg)](#)
+[![Short Link](https://img.shields.io/badge/Short%20Link-tinyurl.com%2Fashiee--ai-purple.svg)](https://tinyurl.com/ashiee-ai)
 
 <p align="center">
   <a href="#-what-is-ashiee-ai-agent">Overview</a> •
