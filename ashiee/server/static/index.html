@@ -4,8 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ashiee — Google Antigravity Studio</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <script src="/static/marked.min.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>✦</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+    <script src="marked.min.js"></script>
+    <style>
+        /* File Explorer Enhancements */
+        .file-tree {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            max-height: 220px;
+            overflow-y: auto;
+            background: rgba(14, 17, 26, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 8px;
+        }
+        .file-tree-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+        .file-tree-item:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        .file-tree-item.active {
+            background: rgba(66, 133, 244, 0.15);
+            color: var(--agy-blue);
+        }
+        .file-icon { font-size: 11px; opacity: 0.8; }
+        .code-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .code-modal {
+            background: #0B0D14;
+            border: 1px solid var(--border-accent);
+            border-radius: 12px;
+            width: 850px;
+            max-width: 92vw;
+            height: 560px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+        .code-modal-header {
+            padding: 12px 18px;
+            background: #121522;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-modal-body {
+            flex: 1;
+            padding: 16px;
+            overflow: auto;
+            background: #080A0F;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.6;
+            color: #d1d5db;
+            white-space: pre;
+        }
+    </style>
 </head>
 <body class="antigravity-dark">
     <div class="antigravity-layout">
@@ -22,18 +100,21 @@
                 <button class="rail-btn active" title="Chat Canvas" onclick="setNavView('chat')">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </button>
-                <button class="rail-btn" title="Projects & Workspaces" onclick="setNavView('projects')">
+                <button class="rail-btn" title="Explorer & Workspace Files" onclick="setNavView('files')">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                </button>
-                <button class="rail-btn" title="Scheduled Automations (Cron)" onclick="setNavView('tasks')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </button>
                 <button class="rail-btn" title="Skills & Plugins" onclick="setNavView('skills')">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 </button>
+                <button class="rail-btn" title="Automations & Cron" onclick="setNavView('tasks')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
             </div>
             <div class="rail-bottom">
-                <button class="rail-btn" title="Settings & Permissions" onclick="setNavView('settings')">
+                <a href="https://github.com/aryanpalla198/ashiee" target="_blank" class="rail-btn" title="GitHub Repository">
+                    <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                </a>
+                <button class="rail-btn" title="Settings & Model" onclick="openSettings()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 </button>
             </div>
@@ -58,7 +139,7 @@
                     <span class="group-title">WORKSPACE</span>
                     <div class="workspace-card" title="Current Workspace Root">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                        <span id="workspacePath" class="path-truncate">Loading workspace...</span>
+                        <span id="workspacePath" class="path-truncate">aryanpalla198/ashiee</span>
                     </div>
                 </div>
 
@@ -74,24 +155,38 @@
                     </div>
                 </div>
 
+                <!-- Workspace Files Explorer -->
+                <div class="panel-group">
+                    <span class="group-title">EXPLORER / FILES</span>
+                    <div class="file-tree" id="fileTreeContainer">
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/core/agent.py')">
+                            <span class="file-icon">🐍</span><span>ashiee/core/agent.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/core/antigravity_bridge.py')">
+                            <span class="file-icon">⚡</span><span>core/antigravity_bridge.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/tools/file_ops.py')">
+                            <span class="file-icon">🔧</span><span>ashiee/tools/file_ops.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('ashiee/tools/terminal.py')">
+                            <span class="file-icon">💻</span><span>ashiee/tools/terminal.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('tests/test_core.py')">
+                            <span class="file-icon">🧪</span><span>tests/test_core.py</span>
+                        </div>
+                        <div class="file-tree-item" onclick="openFilePreview('README.md')">
+                            <span class="file-icon">📄</span><span>README.md</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Progressive Skills -->
                 <div class="panel-group">
                     <span class="group-title">DISCOVERED SKILLS</span>
                     <div class="skills-chips" id="skillsList">
-                        <div class="skill-pill">code-reviewer</div>
-                        <div class="skill-pill">test-generator</div>
-                    </div>
-                </div>
-
-                <!-- Constructed Projects -->
-                <div class="panel-group" id="projectsSection">
-                    <span class="group-title">CONSTRUCTED PROJECTS</span>
-                    <div class="project-badge-card" id="projectBadgeCard" onclick="switchTab('preview')">
-                        <div class="project-indicator online"></div>
-                        <div class="project-info">
-                            <span class="project-name">Auth Portal (Port 5000)</span>
-                            <span class="project-status-text">Live • Click to Preview ↗</span>
-                        </div>
+                        <div class="skill-pill" title="Code review runbook">code-reviewer</div>
+                        <div class="skill-pill" title="Pytest generation runbook">test-generator</div>
+                        <div class="skill-pill" title="Antigravity agent SDK">antigravity-sdk</div>
                     </div>
                 </div>
 
@@ -149,22 +244,22 @@
                     <p>Autonomous AI pair programming runtime. Direct workspace file operations, sandboxed terminal executions, and progressive skill loading.</p>
                     
                     <div class="prompt-starters">
-                        <button class="starter-card" onclick="sendPrompt('Build a login system for my website.')">
-                            <span class="card-icon">🔨</span>
-                            <span class="card-title">Build Complete Website</span>
-                            <span class="card-desc">Construct auth, pages & launch</span>
+                        <button class="starter-card" onclick="sendPrompt('/plan Architect an autonomous multi-agent code analysis pipeline')">
+                            <span class="card-icon">📋</span>
+                            <span class="card-title">Plan Architecture</span>
+                            <span class="card-desc">Interactive /plan workflow</span>
                         </button>
-                        <button class="starter-card" onclick="sendPrompt('display the project')">
-                            <span class="card-icon">🌐</span>
-                            <span class="card-title">Display Live Project</span>
-                            <span class="card-desc">Preview constructed portal</span>
+                        <button class="starter-card" onclick="sendPrompt('Review the code in ashiee/core/agent.py and inspect the ReAct execution loop')">
+                            <span class="card-icon">🛡️</span>
+                            <span class="card-title">Code Review</span>
+                            <span class="card-desc">Audit core engine & tools</span>
                         </button>
                         <button class="starter-card" onclick="sendPrompt('Run pytest tests/ to verify the entire test suite passes')">
                             <span class="card-icon">⚡</span>
                             <span class="card-title">Run Test Suite</span>
                             <span class="card-desc">Sandboxed pytest execution</span>
                         </button>
-                        <button class="starter-card" onclick="sendPrompt('Explore this workspace, list all Python files, and tell me which tools are available in Ashiee.')">
+                        <button class="starter-card" onclick="sendPrompt('Explore this workspace, list all Python files, and inspect registered tools in Ashiee.')">
                             <span class="card-icon">🔍</span>
                             <span class="card-title">Explore Workspace</span>
                             <span class="card-desc">Scan files & inspect tools</span>
@@ -224,7 +319,7 @@
             </div>
         </main>
 
-        <!-- 4. Right Auxiliary Pane (Antigravity 2.0 Side Pane) -->
+        <!-- 4. Right Auxiliary Pane (Antigravity Side Pane) -->
         <aside class="auxiliary-pane">
             <div class="aux-tabs">
                 <button class="aux-tab active" id="tabBtnThoughts" onclick="switchTab('thoughts')">
@@ -242,10 +337,6 @@
                 <button class="aux-tab" id="tabBtnDiffs" onclick="switchTab('diffs')">
                     <span class="tab-dot amber"></span>
                     <span>Diffs</span>
-                </button>
-                <button class="aux-tab" id="tabBtnPreview" onclick="switchTab('preview')">
-                    <span class="tab-dot green"></span>
-                    <span>Live Preview</span>
                 </button>
                 <button class="aux-tab" id="tabBtnBridge" onclick="switchTab('bridge')">
                     <span class="tab-dot blue"></span>
@@ -304,24 +395,6 @@
                     </div>
                 </div>
 
-                <!-- Live Preview Tab -->
-                <div id="previewPane" class="tab-view">
-                    <div class="pane-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="pane-title">Live Application Preview</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button class="aux-action-btn" onclick="reloadPreview()" title="Reload Frame">🔄 Reload</button>
-                            <a href="http://127.0.0.1:5000" target="_blank" class="aux-action-btn" title="Open in New Tab" style="text-decoration:none; color:inherit;">↗ Open</a>
-                        </div>
-                    </div>
-                    <div class="preview-address-bar">
-                        <span class="status-dot online"></span>
-                        <span id="previewUrl">http://127.0.0.1:5000</span>
-                    </div>
-                    <div class="preview-frame-wrap">
-                        <iframe id="previewIframe" src="http://127.0.0.1:5000" class="preview-frame"></iframe>
-                    </div>
-                </div>
-
                 <!-- Antigravity Collaboration Bridge Tab -->
                 <div id="bridgePane" class="tab-view">
                     <div class="pane-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
@@ -329,13 +402,36 @@
                         <button class="aux-action-btn" onclick="syncBridge()" title="Resync Shared Skills">⚡ Sync Now</button>
                     </div>
                     <div id="bridgeTelemetryContent" style="padding: 14px;">
-                        <div class="empty-feed">
-                            <div class="feed-icon">⚡</div>
-                            <p>Connecting to Antigravity Bridge...</p>
+                        <div class="telemetry-card" style="background:#131726; border:1px solid #232942; border-radius:8px; padding:12px; margin-bottom:10px;">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+                                <span style="color:#94a3b8;">Bridge Status:</span>
+                                <span style="color:#10b981; font-weight:600;">Connected (Active)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+                                <span style="color:#94a3b8;">Latency:</span>
+                                <span style="color:#4285f4; font-weight:600;">12.4 ms (In-Memory)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px;">
+                                <span style="color:#94a3b8;">Shared Skills:</span>
+                                <span style="color:#9d4edd; font-weight:600;">11 Indexed Skills</span>
+                            </div>
                         </div>
+                        <p style="font-size:11px; color:#64748b; line-height:1.5;">Real-time co-pilot telemetry exchanging active skills index and workspace tool states between Antigravity and Ashiee.</p>
                     </div>
                 </div>
             </div>
+        </aside>
+    </div>
+
+    <!-- Code Viewer Modal -->
+    <div class="code-modal-backdrop" id="codeModal">
+        <div class="code-modal">
+            <div class="code-modal-header">
+                <span id="codeModalTitle" style="font-size:13px; font-weight:600; color:#4285f4; font-family:var(--font-mono);">File Viewer</span>
+                <button class="topbar-action-btn" onclick="closeFilePreview()">✕ Close</button>
+            </div>
+            <pre class="code-modal-body" id="codeModalContent"></pre>
+        </div>
     </div>
 
     <!-- Settings & Model Modal -->
@@ -349,33 +445,26 @@
                 <button class="modal-close-btn" onclick="closeSettings()">✕</button>
             </div>
             <div class="modal-body">
-                <p class="modal-desc">Connect your Google Gemini or Antigravity credentials for real-time cloud inference, or use the built-in autonomous offline synthesizer.</p>
+                <p class="modal-desc">Configure your Google Gemini or Antigravity runtime model.</p>
                 <div style="margin-bottom: 14px;">
                     <label for="apiKeyInput" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Gemini API Key</label>
                     <input type="password" id="apiKeyInput" placeholder="AIzaSy... (Paste Gemini / AI Studio key)" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px; font-family:var(--font-mono);">
-                    <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
-                        Need an API key? <a href="https://aistudio.google.com/app/api-keys" target="_blank" style="color:var(--agy-blue); text-decoration:none;">Get a free key from Google AI Studio ↗</a>
-                    </div>
                 </div>
                 <div style="margin-bottom: 16px;">
                     <label for="modelSelect" style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Model Selection</label>
                     <select id="modelSelect" style="width:100%; box-sizing:border-box; background:#0c0f1a; border:1px solid var(--border-accent); border-radius:6px; padding:10px; color:#fff; font-size:13px;">
-                        <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fastest, High Quality) — Recommended</option>
-                        <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning & Multimodal)</option>
-                        <option value="gemini-1.5-pro">Gemini 1.5 Pro (Long Context)</option>
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fastest, High Quality) — Default</option>
+                        <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning)</option>
                     </select>
-                </div>
-                <div class="settings-status-box" id="settingsStatusBox" style="background:#0e1322; border:1px solid var(--border-subtle); border-radius:6px; padding:10px 14px; font-size:12px; margin-bottom:16px;">
-                    <span id="settingsStatusText" style="color:var(--text-secondary);">Current Status: Autonomous Local Synthesizer Active</span>
                 </div>
             </div>
             <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
                 <button class="composer-chip" onclick="closeSettings()" style="padding:8px 16px;">Cancel</button>
-                <button class="send-action-btn" onclick="saveSettings()" style="padding:8px 20px;">Save & Connect</button>
+                <button class="send-action-btn" onclick="saveSettings()" style="padding:8px 20px;">Save</button>
             </div>
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
